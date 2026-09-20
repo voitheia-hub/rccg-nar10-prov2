@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 RCCG Province 2 MOI Conference - Interactive Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --primary-blue: #3b82f6;
+            --success-green: #3f9366;
+            --info-cyan: #5ecbf1;
+            --warning-yellow: #fabb33;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1f2937;
+        }
+
+        /* Banner Header Styling */
+        .header-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: #ffffff;
+            padding: 2rem 0 2.2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-banner h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .header-banner p {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .date-badge {
+            background-color: #ffffff;
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Stat KPI Cards */
+        .card-stat {
+            border: none;
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card-stat:hover {
+            transform: translateY(-2px);
+        }
+
+        .card-stat-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            opacity: 0.95;
+        }
+
+        .card-stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .stat-icon {
+            font-size: 2.2rem;
+            opacity: 0.85;
+        }
+
+        .bg-card-blue { background-color: var(--primary-blue); }
+        .bg-card-green { background-color: var(--success-green); }
+        .bg-card-cyan { background-color: var(--info-cyan); color: #ffffff !important; }
+        .bg-card-yellow { background-color: var(--warning-yellow); color: #1f2937 !important; }
+
+        /* Filter Section Styling */
+        .filter-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-section h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            color: #374151;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Table Card & Data Styling */
+        .table-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .table-card h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #111827;
+            border-bottom-width: 1px;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background-color: #f9fafb;
+        }
+
+        .table td {
+            font-size: 0.9rem;
+            padding: 0.85rem 0.75rem;
+            color: #374151;
+            vertical-align: middle;
+        }
+
+        .badge-parish {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+            border-radius: 6px;
+        }
+
+        .badge-leader {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #111827;
+        }
+
+        .badge-att-yes {
+            background-color: #2563eb;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 0.3em 0.6em;
+        }
+
+        .badge-att-no {
+            background-color: #6b7280;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 0.3em 0.6em;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Banner -->
+    <div class="header-banner">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-1"><i class="fa-solid fa-users-gear me-2"></i>2026 Province 2 Men of Impact Conference</h1>
+                    <p class="mb-0">Interactive Participant & Attendance Lookup Portal</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <span class="date-badge"><i class="fa-regular fa-calendar me-1"></i> September 19, 2026</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <!-- KPI Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card card-stat bg-card-blue">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-stat-title">Total Registrations</div>
+                            <div class="card-stat-value" id="totalCount">0</div>
+                        </div>
+                        <i class="fa-solid fa-user-check stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat bg-card-green">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-stat-title">Parishes Represented</div>
+                            <div class="card-stat-value" id="parishCount">0</div>
+                        </div>
+                        <i class="fa-solid fa-church stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat bg-card-cyan">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-stat-title">2025 Attendees</div>
+                            <div class="card-stat-value" id="returningCount">0</div>
+                        </div>
+                        <i class="fa-solid fa-arrows-rotate stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card card-stat bg-card-yellow">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="card-stat-title">Group Leaders</div>
+                            <div class="card-stat-value" id="leaderCount">0</div>
+                        </div>
+                        <i class="fa-solid fa-user-tie stat-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="filter-section">
+            <h5 class="mb-3"><i class="fa-solid fa-filter me-2 text-primary"></i> Filter & Search Participants</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Search Name or Profession</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Type to search...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Filter by Church / Parish</label>
+                    <select id="parishFilter" class="form-select">
+                        <option value="">All Parishes</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Employment Status</label>
+                    <select id="statusFilter" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Unemployed">Unemployed</option>
+                        <option value="Self Employed">Self-Employed / Business</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">2025 Attendee</label>
+                    <select id="attended2025Filter" class="form-select">
+                        <option value="">All</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="fa-solid fa-list me-2 text-secondary"></i> Participant Directory</h5>
+                <span class="text-muted fs-7" id="showingText">Showing 0 of 0 entries</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 4%;">#</th>
+                            <th style="width: 18%;">Name</th>
+                            <th style="width: 22%;">Parish / Church</th>
+                            <th style="width: 26%;">Profession</th>
+                            <th style="width: 14%;">Employment</th>
+                            <th style="width: 8%;">Leader Role</th>
+                            <th style="width: 8%;">2025 Attendee</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantTableBody">
+                        <!-- Dynamic rows inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const participants = [
+            { id: 1, name: "Oluwaseun Akintade", parish: "Light House, Fremont", profession: "Engineer", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 2, name: "Prince Ibe", parish: "Jesus House, Antioch", profession: "Techical Program Mgr / CEO", empStatus: "Owns business", leader: "No", attended2025: "Yes" },
+            { id: 3, name: "Godbless Keku", parish: "Light House, Fremont", profession: "Infrastructure and support Engineer", empStatus: "Unemployed", leader: "No", attended2025: "No" },
+            { id: 4, name: "Nelson Mukolu", parish: "Jesus House, Antioch", profession: "Safety", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 5, name: "Tobi Ajao", parish: "Jesus House Silicon Valley, San Jose", profession: "Engineer", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 6, name: "Olukayode Omotilewa", parish: "Graceland, Livermore", profession: "IT Engineer", empStatus: "Employed", leader: "Yes", attended2025: "Yes" },
+            { id: 7, name: "Tunde Obadofin", parish: "Jesus House Silicon Valley, San Jose", profession: "IT", empStatus: "Owns a business", leader: "Yes", attended2025: "Yes" },
+            { id: 8, name: "Olurotimi Johnson", parish: "RCCG Peace Assembly, San Leandro", profession: "Health worker", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 9, name: "Olayemi Williams", parish: "Jesus House Central Valley, Modesto", profession: "Pharmaceutical", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 10, name: "Kola Oke", parish: "Graceland, Livermore", profession: "IT operations services", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 11, name: "Olusoga Odufalu", parish: "Jesus House, Antioch", profession: "Admin", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 12, name: "Olayemi Oyinkansola", parish: "Jesus House, Antioch", profession: "Pastor / Financial Professional", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 13, name: "Jerry Uwakwe", parish: "Graceland, Livermore", profession: "Finance & Accounting", empStatus: "Unemployed", leader: "No", attended2025: "No" },
+            { id: 14, name: "Femi Ajayi", parish: "Jesus House Central Valley, Modesto", profession: "Retired Engineer", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 15, name: "Emmanuel Adebileje", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 16, name: "Femi Elijah", parish: "Jesus House Central Valley, Modesto", profession: "Cybersecurity Professional / Broker", empStatus: "Employed", leader: "Yes", attended2025: "Yes" },
+            { id: 17, name: "Olukayode Fagbe-Daniels", parish: "Jesus House, Antioch", profession: "Clergy", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 18, name: "Oluwadare Aluko", parish: "Jesus House, Antioch", profession: "IT", empStatus: "Self Employed", leader: "No", attended2025: "No" },
+            { id: 19, name: "Caleb Yenusah", parish: "Light House, Fremont", profession: "Engineer", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 20, name: "Paul Ilo", parish: "Jesus House, Antioch", profession: "CNC Machinist / Maintenance", empStatus: "Unemployed", leader: "No", attended2025: "Yes" },
+            { id: 21, name: "Adebanji Aiku", parish: "Light House, Fremont", profession: "IT professional", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 22, name: "Bola Olatunji", parish: "Jesus House, Antioch", profession: "Engineering", empStatus: "Self Employed / Owns business", leader: "Yes", attended2025: "No" },
+            { id: 23, name: "Adeleye Babawale", parish: "Jesus House, Antioch", profession: "Enterprise Coach", empStatus: "Employed", leader: "No", attended2025: "Yes" },
+            { id: 24, name: "Suo Adidi", parish: "Jesus House, Antioch", profession: "Project Manager", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 25, name: "Paul Abutu", parish: "Jesus House Silicon Valley, San Jose", profession: "Healthcare & Law Lecturer", empStatus: "Employed", leader: "No", attended2025: "No" },
+            { id: 26, name: "Philip Dika", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Not Specified", leader: "No", attended2025: "No" },
+            { id: 27, name: "Adeola Alade", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Not Specified", leader: "No", attended2025: "No" },
+            { id: 28, name: "Magnus Echendu", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Not Specified", leader: "No", attended2025: "No" },
+            { id: 29, name: "Bestman Ndubisi", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Not Specified", leader: "No", attended2025: "No" },
+            { id: 30, name: "Victor Akra", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Not Specified", leader: "No", attended2025: "No" },
+            { id: 31, name: "Adebowale Kolade", parish: "Jesus House, Antioch", profession: "Not Specified", empStatus: "Not Specified", leader: "No", attended2025: "No" }
+        ];
+
+        function initDashboard() {
+            populateParishDropdown();
+            renderData(participants);
+            
+            document.getElementById('searchInput').addEventListener('input', filterData);
+            document.getElementById('parishFilter').addEventListener('change', filterData);
+            document.getElementById('statusFilter').addEventListener('change', filterData);
+            document.getElementById('attended2025Filter').addEventListener('change', filterData);
+        }
+
+        function populateParishDropdown() {
+            const parishSelect = document.getElementById('parishFilter');
+            const parishes = [...new Set(participants.map(p => p.parish))].sort();
+            parishes.forEach(parish => {
+                const opt = document.createElement('option');
+                opt.value = parish;
+                opt.textContent = parish;
+                parishSelect.appendChild(opt);
+            });
+        }
+
+        function filterData() {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            const parishVal = document.getElementById('parishFilter').value;
+            const statusVal = document.getElementById('statusFilter').value;
+            const attendedVal = document.getElementById('attended2025Filter').value;
+
+            const filtered = participants.filter(p => {
+                const nameMatch = p.name.toLowerCase().includes(searchVal) || p.profession.toLowerCase().includes(searchVal);
+                const parishMatch = !parishVal || p.parish === parishVal;
+                const statusMatch = !statusVal || p.empStatus.toLowerCase().includes(statusVal.toLowerCase());
+                const attendedMatch = !attendedVal || p.attended2025 === attendedVal;
+
+                return nameMatch && parishMatch && statusMatch && attendedMatch;
+            });
+
+            renderData(filtered);
+        }
+
+        function renderData(data) {
+            document.getElementById('totalCount').textContent = data.length;
+            const uniqueParishes = new Set(data.map(p => p.parish)).size;
+            document.getElementById('parishCount').textContent = uniqueParishes;
+            document.getElementById('returningCount').textContent = data.filter(p => p.attended2025 === 'Yes').length;
+            document.getElementById('leaderCount').textContent = data.filter(p => p.leader === 'Yes').length;
+
+            document.getElementById('showingText').textContent = `Showing ${data.length} of ${participants.length} entries`;
+
+            const tbody = document.getElementById('participantTableBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No matching records found</td></tr>`;
+                return;
+            }
+
+            data.forEach((p, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-muted">${index + 1}</td>
+                    <td class="fw-bold">${p.name}</td>
+                    <td><span class="badge badge-parish">${p.parish}</span></td>
+                    <td>${p.profession}</td>
+                    <td>${p.empStatus}</td>
+                    <td class="badge-leader">${p.leader}</td>
+                    <td>${p.attended2025 === 'Yes' 
+                        ? '<span class="badge badge-att-yes">Yes</span>' 
+                        : '<span class="badge badge-att-no">No</span>'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
